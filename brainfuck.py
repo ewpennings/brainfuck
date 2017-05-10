@@ -49,9 +49,9 @@ def check_syntax(script):
 
 
 def interpret(script):
-    # Initialize tape with 30000 unsigned 8-bit cells with a value of 0
+    # Initialize tape with a byte array of size 30000
     # The tape may grow in size if needed
-    tape = [0] * 30000
+    tape = bytearray(30000)
 
     # Point to the first cell
     p = 0
@@ -70,15 +70,15 @@ def interpret(script):
             if ch is '>':
                 p += 1
                 if p >= len(tape):
-                    tape.extend([0] * 100)
+                    tape.extend(bytearray(100))
             elif ch is '<':
                 p -= 1
                 if p < 0:
                     raise IndexError("Pointer out of bounds")
             elif ch is '+':
-                tape[p] = (tape[p] + 1) % 256
+                tape[p] += 1
             elif ch is '-':
-                tape[p] = (tape[p] - 1) % 256
+                tape[p] -= 1
             elif ch is '[':
                 if tape[p] == 0:
                     n = 0
@@ -108,7 +108,7 @@ def interpret(script):
                             else:
                                 n -= 1
             elif ch is '.':
-                print(chr(tape[p]), end='', flush=True)
+                sys.stdout.write(chr(tape[p]))
             elif ch is ',':
                 ch = getch()
                 x = ord(ch)
